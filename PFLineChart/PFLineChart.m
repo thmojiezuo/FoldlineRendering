@@ -53,7 +53,7 @@
         UIBezierPath *progressline = [UIBezierPath bezierPath];
         CGFloat firstValue = [[childAry objectAtIndex:0] floatValue];
         CGFloat xPosition = (_xLabelWidth/2.0)+YLabelMargin;
-        CGFloat chartCavanHeight = self.frame.size.height;
+        CGFloat chartCavanHeight = self.frame.size.height-_bottomValues;
         
         float grade = ((float)firstValue-_yValueMin) / ((float)_yValueMax-_yValueMin);
         
@@ -68,7 +68,7 @@
             float grade2 =([valueString floatValue]-_yValueMin) / ((float)_yValueMax-_yValueMin);
             if (index != 0) {
                 
-                CGPoint point = CGPointMake(xPosition+index*_xLabelWidth+YLabelMargin, chartCavanHeight - grade2 * chartCavanHeight);
+                CGPoint point = CGPointMake(xPosition+index*_xLabelWidth, chartCavanHeight - grade2 * chartCavanHeight);
                 [progressline addLineToPoint:point];
                 [progressline moveToPoint:point];
                
@@ -78,7 +78,8 @@
        
         _chartLine.path = progressline.CGPath;
         _chartLine.strokeColor = [[_colors objectAtIndex:i] CGColor];
-       
+      
+        //这里添加一个动画效果，可去掉
         CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
         pathAnimation.duration = childAry.count*0.01;
         pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
@@ -108,7 +109,7 @@
     
     CGFloat firstValue = [[childAry objectAtIndex:0] floatValue];
     CGFloat xPosition = (_xLabelWidth/2.0)+YLabelMargin;
-    CGFloat chartCavanHeight = self.frame.size.height;
+    CGFloat chartCavanHeight = self.frame.size.height-_bottomValues;
     
     float grade = ((float)firstValue-_yValueMin) / ((float)_yValueMax-_yValueMin);
     
@@ -120,7 +121,7 @@
         float grade2 =([valueString floatValue]-_yValueMin) / ((float)_yValueMax-_yValueMin);
         if (index != 0) {
             
-            CGPoint point = CGPointMake(xPosition+index*_xLabelWidth+YLabelMargin, chartCavanHeight - grade2 * chartCavanHeight);
+            CGPoint point = CGPointMake(xPosition+index*_xLabelWidth, chartCavanHeight - grade2 * chartCavanHeight);
             [path addLineToPoint:point];
            
         }
@@ -143,7 +144,7 @@
 
     
 }
-
+// 这里是做 渲染色
 - (CAGradientLayer *)gradientLayerForBackground:(UIColor *)color {
     
     CAGradientLayer *layer =  [CAGradientLayer layer];
@@ -165,10 +166,22 @@
     
     //y轴数据
     [_yLabels enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        CGRect rect = CGRectMake(0, self.bounds.size.height-idx*30 , YLabelMargin-10, 30);
-        
+        if (idx == 0) {
+            return ;
+        }
+        CGRect rect = CGRectMake(0, self.bounds.size.height-_bottomValues-idx*30 , YLabelMargin-10, 30);
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         style.alignment = NSTextAlignmentRight;
+        [obj drawWithRect:rect options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font, NSParagraphStyleAttributeName:style, NSForegroundColorAttributeName:[UIColor grayColor]} context:nil];
+        
+    }];
+    
+    //X轴数据
+    NSArray *arrary = _yValues[0];
+    [arrary enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        CGRect rect = CGRectMake(YLabelMargin+idx*_xLabelWidth, self.bounds.size.height-_bottomValues , _xLabelWidth, _bottomValues);
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        style.alignment = NSTextAlignmentCenter;
         [obj drawWithRect:rect options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font, NSParagraphStyleAttributeName:style, NSForegroundColorAttributeName:[UIColor grayColor]} context:nil];
         
     }];
@@ -177,13 +190,13 @@
     CGContextSetLineWidth(context, 1.5);
     CGContextSetStrokeColorWithColor(context, [UIColor grayColor].CGColor);
     CGContextMoveToPoint(context, YLabelMargin, 0); //设置线的起始点
-    CGContextAddLineToPoint(context, YLabelMargin, self.bounds.size.height); //设置线中间的一个点
+    CGContextAddLineToPoint(context, YLabelMargin, self.bounds.size.height-_bottomValues); //设置线中间的一个点
     CGContextStrokePath(context);//直接把所有的点连起来
     
     //x轴线
     CGContextSetLineWidth(context, 2.0);
-    CGContextMoveToPoint(context, YLabelMargin, self.bounds.size.height); //设置线的起始点
-    CGContextAddLineToPoint(context, self.bounds.size.width, self.bounds.size.height); //设置线中间的一个点
+    CGContextMoveToPoint(context, YLabelMargin, self.bounds.size.height-_bottomValues); //设置线的起始点
+    CGContextAddLineToPoint(context, self.bounds.size.width, self.bounds.size.height-_bottomValues); //设置线中间的一个点
     CGContextStrokePath(context);//直接把所有的点连起来
     
     

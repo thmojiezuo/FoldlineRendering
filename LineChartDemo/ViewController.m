@@ -23,7 +23,7 @@
     NSArray *arrary1 = @[@"0",@"30",@"80",@"50",@"100",@"80",@"100",@"50",@"0"];
     NSArray *arrary2 = @[@"0",@"40",@"90",@"30",@"80",@"100",@"60",@"20",@"0"];
     
-    PFLineChart *lineChart = [[PFLineChart alloc] initWithFrame:CGRectMake(0, 100, [UIScreen mainScreen].bounds.size.width, 150)];
+    PFLineChart *lineChart = [[PFLineChart alloc] initWithFrame:CGRectMake(0, 100, [UIScreen mainScreen].bounds.size.width, 150+40)];  //这里加的40 是X轴上数据的高度，实际折线的高度为150
     lineChart.yValues = @[arrary1,arrary2];
     lineChart.yLabels = @[@"0",@"20",@"40",@"60",@"80",@"100"];
     lineChart.colors = @[RGB(235, 186, 158,1),RGB(160, 235, 227,1)];
@@ -31,8 +31,9 @@
     lineChart.yValueMin = 0;
     lineChart.yValueMax = 100;
     lineChart.xLabelWidth = 30;
-    [lineChart reloadViews];
+    lineChart.bottomValues = 40;
     [self.view addSubview:lineChart];
+    [lineChart reloadViews];
 }
 
 
