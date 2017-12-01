@@ -21,7 +21,7 @@
     [super viewDidLoad];
     
     NSArray *arrary1 = @[@"0",@"30",@"80",@"50",@"100",@"80",@"100",@"50",@"0"];
-    NSArray *arrary2 = @[@"0",@"40",@"90",@"30",@"80",@"100",@"60",@"20",@"0"];
+    NSArray *arrary2 = @[@"20",@"40",@"90",@"30",@"80",@"100",@"60",@"20",@"50"];
     
     PFLineChart *lineChart = [[PFLineChart alloc] initWithFrame:CGRectMake(0, 100, [UIScreen mainScreen].bounds.size.width, 150+40)];  //这里加的40 是X轴上数据的高度，实际折线的高度为150
     lineChart.yValues = @[arrary1,arrary2];

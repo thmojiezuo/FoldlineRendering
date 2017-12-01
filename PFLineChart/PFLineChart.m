@@ -114,15 +114,34 @@
     float grade = ((float)firstValue-_yValueMin) / ((float)_yValueMax-_yValueMin);
     
     //第一个点
-    [path moveToPoint:CGPointMake(xPosition, chartCavanHeight - grade * chartCavanHeight)];
+    if (firstValue == 0) {
+        [path moveToPoint:CGPointMake(xPosition, chartCavanHeight - grade * chartCavanHeight)];
+    }else{
+        [path moveToPoint:CGPointMake(xPosition, chartCavanHeight)];
+         CGPoint point = CGPointMake(xPosition, chartCavanHeight - grade * chartCavanHeight);
+        [path addLineToPoint:point];
+    }
+    
     NSInteger index = 0;
     for (NSString * valueString in childAry) {
         
         float grade2 =([valueString floatValue]-_yValueMin) / ((float)_yValueMax-_yValueMin);
         if (index != 0) {
+            if (index == childAry.count-1) {
+                if ([valueString floatValue] == 0) {
+                    CGPoint point = CGPointMake(xPosition+index*_xLabelWidth, chartCavanHeight - grade2 * chartCavanHeight);
+                    [path addLineToPoint:point];
+                }else{
+                    CGPoint point = CGPointMake(xPosition+index*_xLabelWidth, chartCavanHeight - grade2 * chartCavanHeight);
+                    [path addLineToPoint:point];
+                    CGPoint point2 = CGPointMake(xPosition+index*_xLabelWidth, chartCavanHeight );
+                    [path addLineToPoint:point2];
+                }
+            }else{
+                CGPoint point = CGPointMake(xPosition+index*_xLabelWidth, chartCavanHeight - grade2 * chartCavanHeight);
+                [path addLineToPoint:point];
+            }
             
-            CGPoint point = CGPointMake(xPosition+index*_xLabelWidth, chartCavanHeight - grade2 * chartCavanHeight);
-            [path addLineToPoint:point];
            
         }
         index += 1;
